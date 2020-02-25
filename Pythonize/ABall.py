@@ -4,13 +4,9 @@ import numpy as np #, time
 import matplotlib.pyplot as plt
 import matplotlib.animation as anim
 
-
-
-
 class Ball:
 
     #Constants and class shared
-
     g = 9.8
 
     def add(a, b):
@@ -28,7 +24,7 @@ class Ball:
         self.m = m
         self.R = R
         self.f = np.array([0,0,-self.m*Ball.g])
-        self.VR = [[], [], []]
+        self.Vr = [[], [], []] #Vector r
        # self.VV = [[], [], []]
         
     #def Force(self): self.f = np.array([0,0,-self.m*Ball.g])
@@ -38,20 +34,19 @@ class Ball:
         self.v = self.v + self.f*dt/self.m
         
     def Updating(self):
-        self.VR[0].append(self.r[0])
-        self.VR[1].append(self.r[1])
-        self.VR[2].append(self.r[2])
+        self.Vr[0].append(self.r[0])
+        self.Vr[1].append(self.r[1])
+        self.Vr[2].append(self.r[2])
         
-    def Animation(self, x, y, filename):
+    def Animation(self, filename):
+        x, y, z = self.Vr[0], self.Vr[1], self.Vr[2]
         plt.close('All')
-        
-        fig = plt.figure(1)
-        ax=plt.axes(xlim=(0,40),ylim=(-20,10))
+        fig, ax = plt.figure(1), plt.axes(xlim=(0,40),ylim=(-20,10))
         plt.grid(linestyle='-')
         plt.xlabel('x')
         plt.ylabel('z')
         
-        [line]=ax.plot([],[], 'ro', lw=30*self.R)
+        [line] = ax.plot([],[], 'ro', lw=30*self.R)
         
         def init():
             line.set_data([],[])
@@ -66,14 +61,12 @@ class Ball:
         animation.save(filename, writer=anim.PillowWriter(fps=10))
     
 
-#if __name__=="__main__":
+if __name__=="__main__":
 
-dt = 0.05
-    #(r, v, m , R)
-Body = Ball([0, 0, 0], [12, 0, 9], 1, 0.5)
-
-
-for t in range(200):
-    Body.Updating()
-    Body.Move(dt)
-Body.Animation(Body.VR[0], Body.VR[2], 'Animation.gif')
+    dt = 0.05
+    Body = Ball([0, 0, 0], [12, 0, 9], 1, 0.5)  #(r, v, m , R)
+    
+    for t in range(200):
+        Body.Updating()
+        Body.Move(dt)
+    Body.Animation('Animation1.gif')
